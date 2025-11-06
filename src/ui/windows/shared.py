@@ -1,0 +1,30 @@
+import dearpygui.dearpygui as dpg
+
+
+def log(msg):
+    if msg:
+        dpg.add_text(msg, parent="LogsWindow")
+        dpg.set_y_scroll("LogsWindow", dpg.get_y_scroll_max("LogsWindow"))
+
+
+def ParametersForm(interface):
+
+    def parameter_callback(sender, app_data, user_data):
+        log(interface.set_parameter(user_data, app_data))
+
+    with dpg.group(width=100) as ParametersForm:
+
+        for key, parameter in interface.parameters.items():
+
+            args = {arg: val for arg, val in parameter["args"].items()}
+            args |= {"user_data": key, "callback": parameter_callback}
+
+            match parameter["type"]:
+                case "input_int": dpg.add_input_int(**args)
+                case "slider_int": dpg.add_slider_int(**args)
+
+            if "tooltip" in parameter:
+                with dpg.tooltip(dpg.last_item()):
+                    dpg.add_text(parameter["tooltip"])
+
+    return ParametersForm
