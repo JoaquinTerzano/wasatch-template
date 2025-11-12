@@ -1,19 +1,32 @@
 import dearpygui.dearpygui as dpg
+from ..shared import log
 
 
 def AcquisitionWindow(cam_interface):
 
-    dpg.add_text("Acquisition")
+    with dpg.group(width=100) as AcquisitionWindow:
 
-    def acqtime_callback(sender, app_data, user_data):
-        cam_interface.acq_time = app_data
+        dpg.add_text("Acquisition")
 
-    dpg.add_input_int(width=100, label="acq_time",
-                      default_value=100, callback=acqtime_callback)
+        def acqtime_callback(sender, app_data, user_data):
+            log(cam_interface.set_acq_time(app_data))
 
-    def acquire_callback(sender, app_data, user_data):
-        dpg.set_item_label(sender, "Acquiring...")
-        cam_interface.acquire()
-        dpg.set_item_label(sender, "Acquire")
+        args = cam_interface.acq_time["args"]
+        dpg.add_input_int(
+            label=args["label"],  default_value=args["default_value"], callback=acqtime_callback)
+        if "tooltip" in cam_interface.acq_time:
+            with dpg.tooltip(dpg.last_item()):
+                dpg.add_text(cam_interface.acq_time["tooltip"])
 
-    dpg.add_button(label="Acquire", callback=acquire_callback)
+        def acqname_callback(sender, app_data, user_data):
+            cam_interface.acq_name = app_data
+
+        dpg.add_input_text(label="Acq. name",
+                           default_value="data", callback=acqname_callback)
+
+        def acquire_callback(sender, app_data, user_data):
+            dpg.set_item_label(sender, "Acquiring...")
+            log(cam_interface.acquire())
+            dpg.set_item_label(sender, "Acquire")
+
+        dpg.add_button(label="Acquire", callback=acquire_callback)

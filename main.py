@@ -10,7 +10,7 @@ def main():
     viewport = {
         "title": "Wasatch",
         "width": 960,
-        "height": 640,
+        "height": 660,
         "height_upper": 480
     }
 

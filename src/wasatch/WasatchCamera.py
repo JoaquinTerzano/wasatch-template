@@ -70,7 +70,16 @@ class WasatchCamera():
 
         self.nframes = 100
 
-        self.acq_time = 1
+        self.acq_time = {
+            "args": {
+                "label": "Acq. time [ms]",
+                "default_value": 100,
+            },
+            "unit": 1e-3,
+            "value": 100
+        }
+
+        self.acq_name = "data"
 
         self.data = None
 
@@ -102,6 +111,13 @@ class WasatchCamera():
             return self.update_parameters()
         return "no camera selected"
 
+    def set_acq_time(self, acq_time):
+        self.acq_time["value"] = acq_time
+        # acq_time = nframes * frame_time = nframes * 100 * line_time
+        self.nframes = ISU_value(self.acq_time) // (100 *
+                                                    ISU_value(self.parameters["ltm"]))
+        return f"nframes set to {self.nframes}"
+
     def select_cam(self, cam_id: str):
         if isinstance(self.cam, IMAQ.IMAQCamera):
             self.cam.close()
@@ -115,9 +131,6 @@ class WasatchCamera():
     def acquire(self):
         if isinstance(self.cam, IMAQ.IMAQCamera):
             messages = f""
-            # acq_time = nframes * frame_time = nframes * 100 * line_time
-            nframes = self.acq_time // (100 *
-                                        ISU_value(self.parameters["ltm"]))
             messages += self.update_parameters()
             self.cam.setup_acquisition(mode="sequence", nframes=self.nframes)
             messages += self.msg_cam(f"lsc 1\r")
@@ -126,7 +139,7 @@ class WasatchCamera():
             self.cam.stop_acquisition()
             messages += self.msg_cam(f"lsc 0\r")
             self.data = np.vstack(self.cam.read_multiple_images())
-            np.save("data.npy", self.data)
+            np.save(f"{self.acq_name}.npy", self.data)
             return messages
         return "no camera selected"
 
