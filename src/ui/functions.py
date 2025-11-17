@@ -20,7 +20,8 @@ def update_plots(spectrometer, cam_interface, sim_interface, t):
                   sim_interface.I(spectrometer, t).tolist()])
 
     def fft(I): return np.abs(np.fft.fft(I, spectrometer.OPDlen()))
-    dpg.set_value("OPDAcq", [(OPD*1e6).tolist(),
-                  fft(cam_interface.I()).tolist()])
-    dpg.set_value("OPDSim", [(OPD*1e6).tolist(),
-                  fft(sim_interface.I(spectrometer, t)).tolist()])
+    l, r = 5, len(k)//2
+    dpg.set_value("OPDAcq", [(OPD[l:r]*1e6).tolist(),
+                  fft(cam_interface.I())[l:r].tolist()])
+    dpg.set_value("OPDSim", [(OPD[l:r]*1e6).tolist(),
+                  fft(sim_interface.I(spectrometer, t))[l:r].tolist()])

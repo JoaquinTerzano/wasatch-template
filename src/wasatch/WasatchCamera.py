@@ -96,13 +96,16 @@ class WasatchCamera():
         if isinstance(self.cam, IMAQ.IMAQCamera):
             messages = f""
             for key, parameter in self.parameters.items():
-                messages += f"{self.msg_cam(f"{key} {parameter["value"]}\r")}"
+                messages += self.msg_cam(f"{key} {parameter['value']}\r")
             return messages
         return "no camera selected"
 
     def I(self):
         if isinstance(self.cam, IMAQ.IMAQCamera):
-            return self.cam.snap()[0][0][:]
+            self.msg_cam(f"lsc 1\r")
+            snap = self.cam.snap()
+            self.msg_cam(f"lsc 0\r")
+            return snap[0, :]
         return np.zeros(shape=2048)
 
     def set_parameter(self, key: str, value):
@@ -114,8 +117,8 @@ class WasatchCamera():
     def set_acq_time(self, acq_time):
         self.acq_time["value"] = acq_time
         # acq_time = nframes * frame_time = nframes * 100 * line_time
-        self.nframes = ISU_value(self.acq_time) // (100 *
-                                                    ISU_value(self.parameters["ltm"]))
+        self.nframes = int(ISU_value(self.acq_time) // (100 *
+                                                    ISU_value(self.parameters["ltm"])))
         return f"nframes set to {self.nframes}"
 
     def select_cam(self, cam_id: str):
@@ -132,8 +135,8 @@ class WasatchCamera():
         if isinstance(self.cam, IMAQ.IMAQCamera):
             messages = f""
             messages += self.update_parameters()
-            self.cam.setup_acquisition(mode="sequence", nframes=self.nframes)
             messages += self.msg_cam(f"lsc 1\r")
+            self.cam.setup_acquisition(mode="sequence", nframes=self.nframes)
             self.cam.start_acquisition()
             self.cam.wait_for_frame(since="start", nframes=self.nframes)
             self.cam.stop_acquisition()

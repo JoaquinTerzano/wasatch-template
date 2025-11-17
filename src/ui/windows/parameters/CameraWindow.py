@@ -16,7 +16,10 @@ def CameraWindow(interface):
 
         dpg.add_button(label="List cameras", callback=list_cameras_callback)
 
-        dpg.add_listbox(tag="CameraListbox")
+        def select_camera_callback(sender, app_data, user_data):
+            log(interface.select_cam(app_data))
+
+        dpg.add_listbox(tag="CameraListbox", callback=select_camera_callback)
 
         dpg.add_separator()
 
