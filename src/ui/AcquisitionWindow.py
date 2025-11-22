@@ -1,5 +1,5 @@
 import dearpygui.dearpygui as dpg
-from ..shared import log
+from .Logs import log
 
 
 def AcquisitionWindow(cam_interface):
@@ -30,3 +30,5 @@ def AcquisitionWindow(cam_interface):
             dpg.set_item_label(sender, "Acquire")
 
         dpg.add_button(label="Acquire", callback=acquire_callback)
+
+    return AcquisitionWindow

@@ -1,5 +1,10 @@
 import dearpygui.dearpygui as dpg
-from .windows import *
+from .AcquisitionWindow import AcquisitionWindow
+from .CameraWindow import CameraWindow
+from .Logs import LogsWindow
+from .Plots import PlotWindow
+from .SimulationWindow import SimulationWindow
+from .SpectrometerWindow import SpectrometerWindow
 
 
 def MainWindow(spectrometer, cam_interface, sim_interface):

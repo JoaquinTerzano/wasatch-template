@@ -1,8 +1,8 @@
 import dearpygui.dearpygui as dpg
-from src.ui import *
-from src.shared import *
-from src.wasatch import *
-from src.simulation import *
+import src.ui as ui
+import src.shared as shared
+import src.wasatch as wasatch
+import src.simulation as simulation
 
 
 def main():
@@ -19,12 +19,12 @@ def main():
                         width=viewport["width"],
                         height=viewport["height"])
 
-    spectrometer, cam_interface, sim_interface = Spectrometer(
-    ), WasatchCamera(), SimulationCamera()
+    spectrometer, cam_interface, sim_interface = shared.Spectrometer(
+    ), wasatch.WasatchCamera(), simulation.SimulationCamera()
 
-    main_window = MainWindow(spectrometer, cam_interface, sim_interface)
+    main_window = ui.MainWindow(spectrometer, cam_interface, sim_interface)
 
-    update(spectrometer, cam_interface, sim_interface, 0.)
+    ui.update(spectrometer, cam_interface, sim_interface, 0.)
 
     dpg.setup_dearpygui()
 

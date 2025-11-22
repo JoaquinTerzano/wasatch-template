@@ -1,3 +1,3 @@
-from .CoherentLightSource import *
-from .Reference import *
-from .SimulationCamera import *
+from .CoherentLightSource import CoherentLightSource
+from .Reference import Reference
+from .SimulationCamera import SimulationCamera

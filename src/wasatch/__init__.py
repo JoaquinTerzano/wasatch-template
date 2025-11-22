@@ -1,1 +1,1 @@
-from .WasatchCamera import *
+from .WasatchCamera import WasatchCamera

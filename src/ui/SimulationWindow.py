@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
-from ..shared import ParametersForm
-from ....simulation import Reference
+from .ParametersForm import ParametersForm
+from ..simulation import Reference
 
 
 def SimulationWindow(interface):
@@ -20,7 +20,7 @@ def SimulationWindow(interface):
 
             def add_reference_callback(sender, app_data, user_data):
                 interface.references.append(
-                    interface.reference.clone())
+                    Reference(interface.reference.parameters))
                 with dpg.table_row(parent="ReferencesTable"):
                     for key, parameter in interface.reference.parameters.items():
                         dpg.add_text(str(parameter["value"]))

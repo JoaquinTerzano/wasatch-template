@@ -74,10 +74,6 @@ class Reference:
 
     def set_parameter(self, key: str, value):
         self.parameters[key]["value"] = value
-        print("set")
-
-    def clone(self):
-        return Reference(self.parameters)
 
     def α(self, t):
         return self.x() - self.β() * np.sin(self.Ω() * t)

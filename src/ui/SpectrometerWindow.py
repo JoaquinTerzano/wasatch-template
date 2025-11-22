@@ -1,5 +1,5 @@
 import dearpygui.dearpygui as dpg
-from ..shared import ParametersForm
+from .ParametersForm import ParametersForm
 
 
 def SpectrometerWindow(interface):

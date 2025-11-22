@@ -1,5 +1,5 @@
 import numpy as np
-from ..shared import ISU_value
+from .functions import ISU_value
 
 
 class Spectrometer:

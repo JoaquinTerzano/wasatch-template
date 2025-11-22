@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
-from ..shared import ParametersForm, log
+from .ParametersForm import ParametersForm
+from .Logs import log
 
 
 def CameraWindow(interface):
