@@ -57,26 +57,21 @@ reference_parameters = {
 }
 
 
+def A(reference, source):
+    return lambda λ: ISU_value(reference["intensity_factor"]) * source.A(λ)
+
+
+def α(reference, t):
+    Ω = ISU_value(reference["vibration_frequency"])
+    β = ISU_value(reference["vibration_amplitude"])
+    x = ISU_value(reference["optical_distance"])
+    return x - β * np.sin(Ω * t)
+
+
 class Reference:
 
     def __init__(self, parameters):
-
         self.parameters = parameters
-
-        self.x = lambda: ISU_value(self.parameters["optical_distance"])
-
-        self.intensity_factor = lambda: ISU_value(
-            self.parameters["intensity_factor"])
-
-        self.Ω = lambda: ISU_value(self.parameters["vibration_frequency"])
-
-        self.β = lambda: ISU_value(self.parameters["vibration_amplitude"])
 
     def set_parameter(self, key: str, value):
         self.parameters[key]["value"] = value
-
-    def α(self, t):
-        return self.x() - self.β() * np.sin(self.Ω() * t)
-
-    def A(self, source):
-        return lambda λ: self.intensity_factor() * source.A(λ)

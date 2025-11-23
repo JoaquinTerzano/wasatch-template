@@ -24,6 +24,6 @@ def CameraWindow(interface):
 
         dpg.add_separator()
 
-        _ = ParametersForm(interface)
+        CameraForm = ParametersForm(interface)
 
     return CameraWindow

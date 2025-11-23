@@ -65,4 +65,4 @@ class CoherentLightSource:
             np.exp(-(x - μ)**2 / (2*σ**2))
         μ = self.λc()
         σ = self.Δλ() / (2*np.sqrt(2*np.log(2)))
-        return self.P() * G(μ, σ)(λ)
+        return self.P() * G(μ, σ)(λ) * np.random.normal(μ, σ, len(λ))

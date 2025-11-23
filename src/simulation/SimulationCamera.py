@@ -1,6 +1,7 @@
 import numpy as np
 from .CoherentLightSource import *
-from .Reference import *
+from .Reference import Reference, reference_parameters, A, α
+from copy import deepcopy
 
 
 c = 299792458  # Speed of light [m/s]
@@ -13,13 +14,13 @@ c = 299792458  # Speed of light [m/s]
 def interference_term(source, spectrometer, sample, reference):
     s, r = sample, reference
     λ, k = spectrometer.λ(), spectrometer.k()
-    return lambda t: 2 * s.A(source)(λ) * r.A(source)(λ) * np.cos(k * (s.α(t) - r.α(t)))
+    return lambda t: 2 * A(s, source)(λ) * A(r, source)(λ) * np.cos(k * (α(s, t) - α(r, t)))
 
 
 def irradiance(source, spectrometer, references, t):
     I = np.zeros_like(spectrometer.k())
     for r in references:
-        I += ε0 * c * (r.A(source)(spectrometer.λ()))**2
+        I += ε0 * c * (A(r, source)(spectrometer.λ()))**2
     for i, s in enumerate(references[:-1]):
         for r in references[i:]:
             I += ε0 * c * (interference_term(source, spectrometer, s, r)(t))
@@ -32,9 +33,12 @@ class SimulationCamera():
 
         self.source = CoherentLightSource()
 
-        self.reference = Reference(reference_parameters)
+        self.reference = Reference(deepcopy(reference_parameters))
 
         self.references = []
 
     def I(self, spectrometer, t):
         return irradiance(self.source, spectrometer, self.references, t)
+
+    def add_reference(self):
+        self.references.append(deepcopy(self.reference.parameters))
