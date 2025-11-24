@@ -7,7 +7,7 @@ from .SimulationWindow import SimulationWindow
 from .SpectrometerWindow import SpectrometerWindow
 
 
-def MainWindow(spectrometer, cam_interface, sim_interface):
+def MainWindow(spectrometer, cam_interface, sim_interface, acq_interface):
 
     with dpg.window() as MainWindow:
 
@@ -22,9 +22,7 @@ def MainWindow(spectrometer, cam_interface, sim_interface):
 
                 with dpg.child_window(border=False):
 
-                    """ ******************** 2do cuadrante ******************** """
-
-                    with dpg.child_window(height=480):
+                    with dpg.child_window():
                         with dpg.tab_bar():
 
                             with dpg.tab(label="Camera"):
@@ -36,18 +34,15 @@ def MainWindow(spectrometer, cam_interface, sim_interface):
                             with dpg.tab(label="Spectrometer"):
                                 Spectrometer = SpectrometerWindow(spectrometer)
 
-                    """ ******************** 3er cuadrante ******************** """
-
-                    with dpg.child_window():
-                        Acquisition = AcquisitionWindow(cam_interface)
+                            with dpg.tab(label="Acquisition"):
+                                Acquisition = AcquisitionWindow(
+                                    acq_interface, cam_interface, sim_interface, spectrometer)
 
                 """ ******************** 2da columna ******************** """
 
                 with dpg.child_window(border=False):
 
-                    """ ******************** 1er cuadrante ******************** """
-
-                    with dpg.child_window(height=480):
+                    with dpg.child_window():
                         with dpg.tab_bar():
 
                             with dpg.tab(label="Wavenumber"):
@@ -62,9 +57,10 @@ def MainWindow(spectrometer, cam_interface, sim_interface):
                                 OPDSim = PlotWindow("OPDSim",
                                                     "Simulated", "OPD [um]")
 
-                    """ ******************** 4to cuadrante ******************** """
-
-                    with dpg.child_window():
-                        Logs = LogsWindow()
+                            with dpg.tab(label="OPD_time"):
+                                OPD_time_Acq = PlotWindow(
+                                    "OPD_time_Acq", "Acquired", "Time [s]")
+                                OPD_time_Sim = PlotWindow(
+                                    "OPD_time_Sim", "Simulated", "Time [s]")
 
     return MainWindow

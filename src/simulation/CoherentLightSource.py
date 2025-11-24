@@ -32,10 +32,10 @@ class CoherentLightSource:
             "args": {
                 "label": "Power",
                 "min_value": 0,
-                "default_value": 1,
+                "default_value": 1000000000,
             },
             "unit": 1,
-            "value": 1,
+            "value": 1000000000,
             "type": "input_int"
         }
 

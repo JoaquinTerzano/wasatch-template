@@ -1,32 +1,27 @@
 import dearpygui.dearpygui as dpg
 from .Logs import log
+from .ParametersForm import ParametersForm
+from .Plots import plot_acquisition
 
 
-def AcquisitionWindow(cam_interface):
+def AcquisitionWindow(acq_interface, cam_interface, sim_interface, spectrometer):
 
     with dpg.group(width=100) as AcquisitionWindow:
 
-        dpg.add_text("Acquisition")
-
-        def acqtime_callback(sender, app_data, user_data):
-            log(cam_interface.set_acq_time(app_data))
-
-        args = cam_interface.acq_time["args"]
-        dpg.add_input_int(
-            label=args["label"],  default_value=args["default_value"], callback=acqtime_callback)
-        if "tooltip" in cam_interface.acq_time:
-            with dpg.tooltip(dpg.last_item()):
-                dpg.add_text(cam_interface.acq_time["tooltip"])
+        Acquisition_ = ParametersForm(acq_interface)
 
         def acqname_callback(sender, app_data, user_data):
-            cam_interface.acq_name = app_data
+            acq_interface.acq_name = app_data
 
         dpg.add_input_text(label="Acq. name",
                            default_value="data", callback=acqname_callback)
 
         def acquire_callback(sender, app_data, user_data):
             dpg.set_item_label(sender, "Acquiring...")
-            log(cam_interface.acquire())
+            log(cam_interface.acquire(acq_interface))
+            log(sim_interface.acquire(acq_interface, cam_interface, spectrometer))
+            plot_acquisition(spectrometer, cam_interface,
+                             sim_interface, acq_interface)
             dpg.set_item_label(sender, "Acquire")
 
         dpg.add_button(label="Acquire", callback=acquire_callback)

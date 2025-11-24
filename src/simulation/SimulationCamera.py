@@ -1,6 +1,7 @@
 import numpy as np
 from .CoherentLightSource import *
 from .Reference import Reference, reference_parameters, A, α
+from ..shared import ISU_value
 from copy import deepcopy
 
 
@@ -37,8 +38,27 @@ class SimulationCamera():
 
         self.references = []
 
+        self.data = None
+
     def I(self, spectrometer, t):
         return irradiance(self.source, spectrometer, self.references, t)
 
     def add_reference(self):
         self.references.append(deepcopy(self.reference.parameters))
+
+    def acquire(self, acq_interface, cam_interface, spectrometer):
+        T = acq_interface.T()
+        dt = cam_interface.dt()
+        nframes = int(T / dt)
+        n = T / nframes
+        N = spectrometer.N()
+
+        def irr(t):
+            return self.I(spectrometer, t)
+
+        # self.data = np.array([irr(np.linspace(i*n, (i+1)*n-1, N))
+        #                     for i in range(nframes)])
+        self.data = np.array([irr(i*n*np.ones(N))
+                              for i in range(nframes)])
+        np.save(f"{acq_interface.acq_name}.npy", self.data)
+        return

@@ -10,8 +10,7 @@ def main():
     viewport = {
         "title": "Wasatch",
         "width": 960,
-        "height": 660,
-        "height_upper": 480
+        "height": 550
     }
 
     dpg.create_context()
@@ -19,12 +18,13 @@ def main():
                         width=viewport["width"],
                         height=viewport["height"])
 
-    spectrometer, cam_interface, sim_interface = shared.Spectrometer(
-    ), wasatch.WasatchCamera(), simulation.SimulationCamera()
+    spectrometer, cam_interface, sim_interface, acq_interface = shared.Spectrometer(
+    ), wasatch.WasatchCamera(), simulation.SimulationCamera(), shared.Acquisition()
 
-    main_window = ui.MainWindow(spectrometer, cam_interface, sim_interface)
+    main_window = ui.MainWindow(
+        spectrometer, cam_interface, sim_interface, acq_interface)
 
-    ui.update(spectrometer, cam_interface, sim_interface, 0.)
+    ui.update(spectrometer, cam_interface, sim_interface, acq_interface, 0.)
 
     dpg.setup_dearpygui()
 
