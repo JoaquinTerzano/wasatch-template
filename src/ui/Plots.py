@@ -65,14 +65,24 @@ def plot_acquisition(spectrometer, cam_interface, sim_interface, acq_interface):
     sim_irr = sim_interface.data
 
     cam_opd = np.apply_along_axis(get_opd, axis=1, arr=cam_irr)
+    cam_t = np.linspace(0, acq_interface.T(), len(cam_opd))
     sim_opd = np.apply_along_axis(get_opd, axis=1, arr=sim_irr)
+    sim_t = np.linspace(0, acq_interface.T(), len(sim_opd))
 
-    dpg.set_value("OPD_time_Acq", [np.linspace(
-        0, acq_interface.T(), len(cam_opd)).tolist(), cam_opd.tolist()])
+    dpg.set_value("OPD_time_Acq", [cam_t.tolist(), cam_opd.tolist()])
     dpg.set_axis_limits("OPD_time_Acq_", ymin=zl, ymax=zr)
-    dpg.set_value("OPD_time_Sim", [np.linspace(
-        0, acq_interface.T(), len(sim_opd)).tolist(), sim_opd.tolist()])
+    dpg.set_value("OPD_time_Sim", [sim_t.tolist(), sim_opd.tolist()])
     dpg.set_axis_limits("OPD_time_Sim_", ymin=zl, ymax=zr)
+
+    cam_fft = np.abs(np.fft.fft(cam_opd))
+    cam_freq = np.fft.fftfreq(len(cam_opd), acq_interface.T()/len(cam_opd))
+    sim_fft = np.abs(np.fft.fft(sim_opd))
+    cam_freq = np.fft.fftfreq(len(sim_opd), acq_interface.T()/len(sim_opd))
+
+    dpg.set_value("Frequency_Acq", [
+                  cam_freq[0:len(cam_opd)//2].tolist(), cam_fft[0:len(cam_opd)//2].tolist()])
+    dpg.set_value("Frequency_Sim", [
+                  cam_freq[0:len(sim_opd)//2].tolist(), sim_fft[0:len(sim_opd)//2].tolist()])
 
 
 def PlotWindow(tag, label="", xlabel="", ylabel="", x=[], y=[]):

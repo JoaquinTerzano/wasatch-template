@@ -63,4 +63,10 @@ def MainWindow(spectrometer, cam_interface, sim_interface, acq_interface):
                                 OPD_time_Sim = PlotWindow(
                                     "OPD_time_Sim", "Simulated", "Time [s]")
 
+                            with dpg.tab(label="Frequency"):
+                                Frequency_Acq = PlotWindow(
+                                    "Frequency_Acq", "Acquired", "Frequency [Hz]")
+                                Frequency_Sim = PlotWindow(
+                                    "Frequency_Sim", "Simulated", "Frequency [Hz]")
+
     return MainWindow
