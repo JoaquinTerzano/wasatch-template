@@ -70,6 +70,14 @@ class WasatchCamera():
 
         self.data = None
 
+        p = np.array(range(2048))
+        C0 = 7.94223e2
+        C1 = 4.62979e-2
+        C2 = -2.60004e-6
+        C3 = -1.48385e-11
+        self.wavelength = C0 + C1 * p + C2 * p**2 + C3 * p**3
+        self.k = 2*np.pi / self.wavelength
+
     def list_cameras(self):
         return IMAQ.list_cameras()
 
@@ -132,7 +140,8 @@ class WasatchCamera():
             self.cam.stop_acquisition()
             messages += self.msg_cam(f"lsc 0\r")
             self.data = np.vstack(self.cam.read_multiple_images())
-            # np.save(f"{self.acq_name}.npy", self.data)
+            np.save(f"./data/irr.npy", self.data)
+            np.save(f"./data/k.npy", self.k)
             return messages
         self.data = np.zeros(shape=(self.nframes(acq_time), 2048))
         return "no camera selected"

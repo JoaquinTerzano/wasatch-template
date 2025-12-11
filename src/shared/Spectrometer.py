@@ -80,7 +80,14 @@ class Spectrometer:
         self.dλ = self.pixel_resolution
 
         self.wavenumber = lambda: np.flip(2*np.pi / self.λ())
-        self.k = self.wavenumber
+
+        p = np.array(range(2048))
+        C0 = 7.94223e2
+        C1 = 4.62979e-2
+        C2 = -2.60004e-6
+        C3 = -1.48385e-11
+        self.wavelength = C0 + C1 * p + C2 * p**2 + C3 * p**3
+        self.k = lambda: 2*np.pi / wavelength
 
         self.kmin = lambda: self.k()[0]
 
